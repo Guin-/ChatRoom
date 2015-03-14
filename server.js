@@ -29,7 +29,7 @@ function sendFile(response, filePath, fileContents){
 
 function serveStatic(response, cache, absPath){
     // Check if file is cached in memory
-    if cache[absPath]{
+    if (cache[absPath]){
         sendFile(response, absPath, cache[absPath]); // Serve file from memory
     } else {
         fs.exists(absPath, function(exists){        // Check if file exists
@@ -52,4 +52,19 @@ function serveStatic(response, cache, absPath){
 
 /* Create the http server */
 
+var server = http.createServer(function(request, response){
+    var filePath = false;
+    if (request.url === '/'){
+        filePath = 'public/index.html';
+    } else {
+        filePath = 'public' + request.url;
+    }
+    var absPath = './' + filePath;
+    serveStatic(response, cache, absPath);
+});
 
+/* Start the http server */
+
+server.listen(3000, function(){
+    console.log("Server listening on port 3000");
+});
